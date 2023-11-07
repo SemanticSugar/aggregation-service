@@ -1,5 +1,7 @@
 # Aggregation Service for Measurement
 
+*Note:* For an account of the changes we made to this rep and how to use it, see [NEXTROLL_CHANGES.md](NEXTROLL_CHANGES.md)
+
 Aggregation Service provides server-side mechanism for adtechs to create summary reports. A summary
 report is the result of noisy aggregation applied to a batch of aggregatable reports. Summary
 reports allow for greater flexibility and a richer data model than event-level reporting,
