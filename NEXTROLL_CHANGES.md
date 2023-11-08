@@ -349,3 +349,73 @@ When the bazel-build-container finishes building, build the artifacts:
 aws codebuild start-build --project-name aggregation-service-artifacts-build --region us-west-2
 (need someone with sre permissions to run this)
 ```
+
+Running into this error in the CodeBuild log:
+
+```
+Build 'amazon-ebs.sample-ami' errored after 936 milliseconds 511 microseconds: VPCIdNotSpecified: No default VPC for this user
+    status code: 400, request id: fffa8013-121f-4855-a665-70e36030a4e7x
+```
+
+In codebuild.tf, add the following to the aggregation-service-artifacts-build block:
+
+```
+  vpc_config {
+    vpc_id = "vpc-59f8063c"
+
+    subnets = [
+      "subnet-099f7250"
+    ]
+
+    security_group_ids = [
+      "sg-00350541fc1080349"
+    ]
+  }
+```
+
+Running into this error in the CodeBuild Phases tab:
+
+```
+UNAUTHORIZED_OPERATION_DESCRIBE_NETWORK_INTERFACES: The service role is not authorized to perform ec2:DescribeNetworkInterfaces
+```
+
+In codebuild.tf, update the codebuild_policy block with the permissions described in [Allow CodeBuild access to AWS services required to create a VPC network interface](https://docs.aws.amazon.com/codebuild/latest/userguide/auth-and-access-control-iam-identity-based-access-control.html#customer-managed-policies-example-create-vpc-network-interface).
+
+```
+        "ec2:CreateNetworkInterface",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:DeleteNetworkInterface",
+        "ec2:DescribeVpcs",
+    . . . . . . . . . .
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateNetworkInterfacePermission"
+      ],
+      "Resource": "arn:aws:ec2:us-west-2:771945457201:network-interface/*",
+      "Condition": {
+        "StringEquals": {
+          "ec2:AuthorizedService": "codebuild.amazonaws.com"
+        },
+        "ArnEquals": {
+          "ec2:Subnet": [
+            "arn:aws:ec2:us-west-2:771945457201:subnet/subnet-099f7250"
+          ]
+        }
+      }
+    },
+```
+
+Running into this error in the CodeBuild Phases tab:
+
+> CLIENT_ERROR: Get "https://github.com/privacysandbox/aggregation-service/info/refs?service=git-upload-pack": dial tcp 192.30.255.113:443: i/o timeout for primary source and source version v2.0.0
+
+Pressing the Validate VPC Settings on the Edit Environment page shows:
+
+> The VPC with ID vpc-59f8063c might not have an internet connection because the provided subnet with ID subnet-099f7250 is public. Provide a private subnet with the 0.0.0.0/0 destination for the target NAT gateway and try again.
+
+Change subnet from to
+
+```
+subnet-249e465d
+```
