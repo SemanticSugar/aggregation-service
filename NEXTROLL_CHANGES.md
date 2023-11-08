@@ -349,3 +349,19 @@ When the bazel-build-container finishes building, build the artifacts:
 aws codebuild start-build --project-name aggregation-service-artifacts-build --region us-west-2
 (need someone with sre permissions to run this)
 ```
+
+
+Running into this error in the CodeBuild log:
+
+```
+Build 'amazon-ebs.sample-ami' errored after 936 milliseconds 511 microseconds: VPCIdNotSpecified: No default VPC for this user
+    status code: 400, request id: fffa8013-121f-4855-a665-70e36030a4e7x
+```
+
+Create a default VPC:
+
+```
+aws ec2 create-default-vpc --region us-west-2
+```
+
+The artifacts should build successfully after this.
