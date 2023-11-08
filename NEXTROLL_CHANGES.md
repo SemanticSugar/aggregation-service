@@ -365,3 +365,12 @@ aws ec2 create-default-vpc --region us-west-2
 ```
 
 The artifacts should build successfully after this.
+
+Download the artifacts.
+
+```
+cd ~/projects/aggregation-service/terraform/aws
+mkdir -p jars
+aws s3 cp s3://adroll-aggregation-service-build-artifacts/aggregation-service/$(cat ../../VERSION)/ jars/ --recursive
+bash fetch_terraform.sh
+```
