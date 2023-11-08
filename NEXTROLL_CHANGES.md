@@ -374,3 +374,14 @@ mkdir -p jars
 aws s3 cp s3://adroll-aggregation-service-build-artifacts/aggregation-service/$(cat ../../VERSION)/ jars/ --recursive
 bash fetch_terraform.sh
 ```
+
+## Set up your deployment environment
+
+This section goes through the steps of [setting up your deployment environmen](https://github.com/privacysandbox/aggregation-service/blob/b5c9c0015220b4631e6a8ca1df9ea36e20c32dee/docs/aws-aggregation-service.md#set-up-your-deployment-environment).
+
+```
+cd ~/projects/aggregation-service/terraform/aws/environments
+mkdir dev
+cp -R demo/* dev
+cd dev
+```
