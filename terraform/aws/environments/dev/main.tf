@@ -25,11 +25,12 @@ terraform {
   # Note: the following lines should be uncommented in order to store Terraform
   # state in a remote backend.
 
-  # backend "s3" {
-  #   bucket = "[bucket name goes here]"
-  #   key    = "[key name goes here].tfstate"
-  #   region = "us-east-1"
-  # }
+  backend "s3" {
+    bucket         = "adroll-tfstate"
+    dynamodb_table = "TerraformLock"
+    region         = "us-west-2"
+    key            = "udp/aggregation-service/environments/dev/terraform.tfstate"
+  }
 
   required_providers {
     aws = {

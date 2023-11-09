@@ -18,8 +18,8 @@
 #
 # These values should be modified for each of your environments.
 
-region      = "us-east-1"
-environment = "operator-demo-env"
+region      = "us-west-2"
+environment = "aggregation-service-dev-env"
 
 # Total resources available affected by instance_type -- actual resources used
 # is affected by enclave_cpu_count / enclave_memory_mib. All 3 values should be
@@ -30,11 +30,11 @@ enclave_memory_mib = 28672        # 28 GiB. ~30GiB are available on m5.2xlarge, 
 
 max_job_num_attempts_parameter      = "5"
 max_job_processing_time_parameter   = "3600"
-coordinator_a_assume_role_parameter = "arn:aws:iam::<CoordinatorAAccount>:role/<CoordinatorARole>"
+coordinator_a_assume_role_parameter = "arn:aws:iam::850159350730:role/a_771945457201_coordinator_assume_role"
 # Remove coordinator_b_assume_role_parameter if using single coordinator
-coordinator_b_assume_role_parameter = "arn:aws:iam::<CoordinatorBAccount>:role/<CoordinatorBRole>"
+coordinator_b_assume_role_parameter = "arn:aws:iam::311771262672:role/b_771945457201_coordinator_assume_role"
 
 min_capacity_ec2_instances = "1"
 max_capacity_ec2_instances = "20"
 
-alarm_notification_email = "noreply@example.com"
+alarm_notification_email = "data-pipelines@nextroll.com"

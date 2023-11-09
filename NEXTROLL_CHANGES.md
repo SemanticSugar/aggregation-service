@@ -385,3 +385,52 @@ mkdir dev
 cp -R demo/* dev
 cd dev
 ```
+
+```
+vi main.tf
+# Configure it as follows:
+  backend "s3" {
+    bucket         = "adroll-tfstate"
+    dynamodb_table = "TerraformLock"
+    region         = "us-west-2"
+    key            = "udp/aggregation-service/environments/dev/terraform.tfstate"
+  }
+```
+
+Rename example.auto.tfvars to dev.auto.tfvars and add the ...assume_role... values using the information you received in the onboarding email.
+
+```
+mv example.auto.tfvars dev.auto.tfvars
+vi dev.auto.tfvars
+# Configure it as follows:
+region      = "us-west-2"
+environment = "aggregation-serice-dev-env"
+. . . . . . . . . .
+coordinator_a_assume_role_parameter = "arn:aws:iam::850159350730:role/a_771945457201_coordinator_assume_role"
+coordinator_b_assume_role_parameter = "arn:aws:iam::311771262672:role/b_771945457201_coordinator_assume_role"
+. . . . . . . . . .
+alarm_notification_email = "data-pipelines@nextroll.com"
+```
+
+Copy the contents of the release_params.auto.tfvars file into a new file self_build_params.auto.tfvars remove the release_params.auto.tfvars file afterwards.
+
+```
+cp -L release_params.auto.tfvars self_build_params.auto.tfvars
+rm release_params.auto.tfvars
+```
+
+And change the line ami_owners = ["971056657085"] to ami_owners = ["self"] in your self_build_params.auto.tfvars
+
+```
+ami_owners = ["self"]
+```
+
+Terraform commands:
+
+```
+terraform init
+terraform plan
+terraform apply
+```
+
+See [terraform plan output](terraform_plan.txt).
