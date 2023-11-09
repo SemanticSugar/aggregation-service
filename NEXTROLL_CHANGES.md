@@ -434,3 +434,15 @@ terraform apply
 ```
 
 See [terraform plan output](terraform_plan.txt).
+
+Success!
+
+```
+Apply complete! Resources: 191 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+create_job_endpoint = "POST https://zsiw2k3pcb.execute-api.us-west-2.amazonaws.com/stage/v1alpha/createJob"
+frontend_api_id = "zsiw2k3pcb"
+get_job_endpoint = "GET https://zsiw2k3pcb.execute-api.us-west-2.amazonaws.com/stage/v1alpha/getJob"
+```
