@@ -438,6 +438,19 @@ vi main.tf
       team               = "data_pipelines"
 ```
 
+If you are updating resources instead of creating them from scratch, add the nextroll-instance
+to the managed_policy_arns. This must have gotten added automatically along the way. If you don't add this, terraform will attempt to remove it and you will get this error: "unable to detach policies: AccessDenied: User: arn:aws:sts::771945457201:assumed-role/sre/jonathan.aquino is not authorized to perform: iam:DetachRolePolicy on resource: role aggregation-service-dev-env-AggregationServiceWorkerRole with an explicit deny in an identity-based policy"
+
+```
+cd ~/projects/aggregation-service/terraform/aws/coordinator-services-and-shared-libraries/operator/terraform/aws/modules/worker
+vi main.tf
+# Update managed_policy_arns in enclave_role:
+  managed_policy_arns = [
+    data.aws_iam_policy.SSMManagedInstanceCore.arn,
+    "arn:aws:iam::771945457201:policy/nextroll-instance"
+  ]
+```
+
 Terraform commands:
 
 ```
