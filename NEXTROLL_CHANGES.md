@@ -425,9 +425,23 @@ And change the line ami_owners = ["971056657085"] to ami_owners = ["self"] in yo
 ami_owners = ["self"]
 ```
 
+
+Ensure proper tags are specified in EC2 instances. Otherwise, the EC2 instances could get [killed](https://adroll.atlassian.net/wiki/spaces/EN/pages/105709614/Tagging+Policies#Automated-scripts-that-delete-resources-that-are-against-our-policies) for not complying with our tagging scheme.
+
+```
+cd ~/projects/aggregation-service/terraform/aws/coordinator-services-and-shared-libraries/operator/terraform/aws/modules/worker
+vi main.tf
+# Add these tags to worker_template:
+      application        = "aggregation-service"
+      env                = "production"
+      pillar             = "insights_attribution"
+      team               = "data_pipelines"
+```
+
 Terraform commands:
 
 ```
+cd ~/projects/aggregation-service/terraform/aws/environments/dev
 terraform init
 terraform plan
 terraform apply
