@@ -374,3 +374,102 @@ mkdir -p jars
 aws s3 cp s3://adroll-aggregation-service-build-artifacts/aggregation-service/$(cat ../../VERSION)/ jars/ --recursive
 bash fetch_terraform.sh
 ```
+
+## Set up your deployment environment
+
+This section goes through the steps of [setting up your deployment environmen](https://github.com/privacysandbox/aggregation-service/blob/b5c9c0015220b4631e6a8ca1df9ea36e20c32dee/docs/aws-aggregation-service.md#set-up-your-deployment-environment).
+
+```
+cd ~/projects/aggregation-service/terraform/aws/environments
+mkdir dev
+cp -R demo/* dev
+cd dev
+```
+
+```
+vi main.tf
+# Configure it as follows:
+  backend "s3" {
+    bucket         = "adroll-tfstate"
+    dynamodb_table = "TerraformLock"
+    region         = "us-west-2"
+    key            = "udp/aggregation-service/environments/dev/terraform.tfstate"
+  }
+```
+
+Rename example.auto.tfvars to dev.auto.tfvars and add the ...assume_role... values using the information you received in the onboarding email.
+
+```
+mv example.auto.tfvars dev.auto.tfvars
+vi dev.auto.tfvars
+# Configure it as follows:
+region      = "us-west-2"
+environment = "aggregation-serice-dev-env"
+. . . . . . . . . .
+coordinator_a_assume_role_parameter = "arn:aws:iam::850159350730:role/a_771945457201_coordinator_assume_role"
+coordinator_b_assume_role_parameter = "arn:aws:iam::311771262672:role/b_771945457201_coordinator_assume_role"
+. . . . . . . . . .
+alarm_notification_email = "data-pipelines@nextroll.com"
+```
+
+Copy the contents of the release_params.auto.tfvars file into a new file self_build_params.auto.tfvars remove the release_params.auto.tfvars file afterwards.
+
+```
+cp -L release_params.auto.tfvars self_build_params.auto.tfvars
+rm release_params.auto.tfvars
+```
+
+And change the line ami_owners = ["971056657085"] to ami_owners = ["self"] in your self_build_params.auto.tfvars
+
+```
+ami_owners = ["self"]
+```
+
+
+Ensure proper tags are specified in EC2 instances. Otherwise, the EC2 instances could get [killed](https://adroll.atlassian.net/wiki/spaces/EN/pages/105709614/Tagging+Policies#Automated-scripts-that-delete-resources-that-are-against-our-policies) for not complying with our tagging scheme.
+
+```
+cd ~/projects/aggregation-service/terraform/aws/coordinator-services-and-shared-libraries/operator/terraform/aws/modules/worker
+vi main.tf
+# Add these tags to worker_template:
+      application        = "aggregation-service"
+      env                = "production"
+      pillar             = "insights_attribution"
+      team               = "data_pipelines"
+```
+
+If you are updating resources instead of creating them from scratch, add the nextroll-instance
+to the managed_policy_arns. This must have gotten added automatically along the way. If you don't add this, terraform will attempt to remove it and you will get this error: "unable to detach policies: AccessDenied: User: arn:aws:sts::771945457201:assumed-role/sre/jonathan.aquino is not authorized to perform: iam:DetachRolePolicy on resource: role aggregation-service-dev-env-AggregationServiceWorkerRole with an explicit deny in an identity-based policy"
+
+```
+cd ~/projects/aggregation-service/terraform/aws/coordinator-services-and-shared-libraries/operator/terraform/aws/modules/worker
+vi main.tf
+# Update managed_policy_arns in enclave_role:
+  managed_policy_arns = [
+    data.aws_iam_policy.SSMManagedInstanceCore.arn,
+    "arn:aws:iam::771945457201:policy/nextroll-instance"
+  ]
+```
+
+Terraform commands:
+
+```
+cd ~/projects/aggregation-service/terraform/aws/environments/dev
+terraform init
+terraform plan
+terraform apply
+```
+
+See [terraform plan output](terraform_plan.txt).
+
+Success!
+
+```
+Apply complete! Resources: 191 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+create_job_endpoint = "POST https://zsiw2k3pcb.execute-api.us-west-2.amazonaws.com/stage/v1alpha/createJob"
+frontend_api_id = "zsiw2k3pcb"
+get_job_endpoint = "GET https://zsiw2k3pcb.execute-api.us-west-2.amazonaws.com/stage/v1alpha/getJob"
+```
