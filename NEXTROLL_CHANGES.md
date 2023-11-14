@@ -43,7 +43,7 @@ build_artifacts_output_bucket = "adroll-aggregation-service-build-artifacts"
 github_personal_access_token = "<generate a token without any scopes/permissions>"
 ```
 
-Do not commit your personal access token to the repo, otherwise GitHub will detect it and expire it. 
+Do not commit your personal access token to the repo, otherwise GitHub will detect it and expire it.
 
 ```
 terraform init
@@ -365,6 +365,15 @@ aws ec2 create-default-vpc --region us-west-2
 ```
 
 The artifacts should build successfully after this.
+
+Go to AWS Console > AMIs and search for the AMI named aggregation-service-enclave... Add the following tags:
+
+```
+pillar: insights_attribution
+team: data_pipelines
+```
+
+Otherwise, the AMI could get [deregistered](https://adroll.atlassian.net/wiki/spaces/EN/pages/105709614/Tagging+Policies#Automated-scripts-that-delete-resources-that-are-against-our-policies) for not complying with our tagging scheme.
 
 Download the artifacts.
 
