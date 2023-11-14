@@ -473,3 +473,14 @@ create_job_endpoint = "POST https://zsiw2k3pcb.execute-api.us-west-2.amazonaws.c
 frontend_api_id = "zsiw2k3pcb"
 get_job_endpoint = "GET https://zsiw2k3pcb.execute-api.us-west-2.amazonaws.com/stage/v1alpha/getJob"
 ```
+
+To test the APIs:
+
+```
+# Get the AccessKeyId, SecretAccessKey, and Token.
+curl http://169.254.169.254/latest/meta-data/iam/security-credentials/hologram-access
+
+curl https://zsiw2k3pcb.execute-api.us-west-2.amazonaws.com/stage/v1alpha/getJob --user "$ACCESS_KEY":"$SECRET_KEY" --aws-sigv4 "aws:amz:us-west-2:execute-api" -H "x-amz-security-token: $TOKEN"
+
+curl -X POST https://zsiw2k3pcb.execute-api.us-west-2.amazonaws.com/stage/v1alpha/createJob --user "$ACCESS_KEY":"$SECRET_KEY" --aws-sigv4 "aws:amz:us-west-2:execute-api" -H "x-amz-security-token: $TOKEN"
+```
