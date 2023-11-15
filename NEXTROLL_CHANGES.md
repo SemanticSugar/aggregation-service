@@ -489,22 +489,22 @@ To test the APIs:
 # Get the AccessKeyId, SecretAccessKey, and Token.
 curl http://169.254.169.254/latest/meta-data/iam/security-credentials/hologram-access
 
-curl https://zsiw2k3pcb.execute-api.us-west-2.amazonaws.com/stage/v1alpha/getJob?job_request_id=test01 --user "$ACCESS_KEY":"$SECRET_KEY" --aws-sigv4 "aws:amz:us-west-2:execute-api" -H "x-amz-security-token: $TOKEN"
+curl https://zsiw2k3pcb.execute-api.us-west-2.amazonaws.com/stage/v1alpha/getJob?job_request_id=16092ed8-9504-4dc1-bf17-26919cc95489 --user "$ACCESS_KEY":"$SECRET_KEY" --aws-sigv4 "aws:amz:us-west-2:execute-api" -H "x-amz-security-token: $TOKEN"
 
 curl -X POST -d @post.txt https://zsiw2k3pcb.execute-api.us-west-2.amazonaws.com/stage/v1alpha/createJob --user "$ACCESS_KEY":"$SECRET_KEY" --aws-sigv4 "aws:amz:us-west-2:execute-api" -H "x-amz-security-token: $TOKEN" --header "Content-Type:application/json"
 
 where post.txt contains
 
 {
-    "input_data_blob_prefix": "requests/date=2023-11-14/test01/input/reports.avro",
+    "input_data_blob_prefix": "requests/attribution-reporting/report-aggregate-attribution/date=2023-11-14/16092ed8-9504-4dc1-bf17-26919cc95489/input/reports.avro",
     "input_data_bucket_name": "adroll-aggregation-service-data",
-    "output_data_blob_prefix": "requests/date=2023-11-14/test01/output/output.avro",
+    "output_data_blob_prefix": "requests/attribution-reporting/report-aggregate-attribution/date=2023-11-14/16092ed8-9504-4dc1-bf17-26919cc95489/output/output.avro",
     "output_data_bucket_name": "adroll-aggregation-service-data",
     "job_parameters": {
         "attribution_report_to": "d.adroll.com",
-        "output_domain_blob_prefix": "requests/date=2023-11-14/test01/domain/domain.avro",
+        "output_domain_blob_prefix": "requests/attribution-reporting/report-aggregate-attribution/date=2023-11-14/16092ed8-9504-4dc1-bf17-26919cc95489/domain/domain.avro",
         "output_domain_bucket_name": "adroll-aggregation-service-data"
     },
-    "job_request_id": "test01"
+    "job_request_id": "16092ed8-9504-4dc1-bf17-26919cc95489"
 }
 ```
